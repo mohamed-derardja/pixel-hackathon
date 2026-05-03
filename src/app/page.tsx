@@ -243,9 +243,9 @@ export default function Home() {
                     <div
                       className="w-full h-full relative border border-slate-200/50 bg-gradient-to-b from-slate-50/50 to-white rounded-2xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md hover:border-primary/20"
                       style={{
-                        backgroundImage: `url('/${gender === "male" ? "man" : "women_front_side_correct"}.svg')`,
-                        backgroundSize: 'auto 150%',
-                        backgroundPosition: 'center 25%',
+                        backgroundImage: `url('/${gender === "male" ? "man_front_side_v2" : "man_front_side_v2"}.svg')`,
+                        backgroundSize: 'auto 350%',
+                        backgroundPosition: 'center 50%',
                       }}
                     >
                       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center 40%, rgba(0, 102, 255, 0.04) 0%, transparent 60%)' }}></div>
