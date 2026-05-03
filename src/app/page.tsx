@@ -4,13 +4,15 @@ import React, { useState } from "react";
 
 export default function Home() {
   const [step, setStep] = useState<"language" | "gender" | "injury">("language");
+  const [gender, setGender] = useState<"male" | "female">("male");
   const [selectedZones, setSelectedZones] = useState<string[]>(["Head", "Right Lower Leg"]);
 
   const handleLanguageSelect = () => {
     setStep("gender");
   };
 
-  const handleGenderSelect = () => {
+  const handleGenderSelect = (selectedGender: "male" | "female") => {
+    setGender(selectedGender);
     setStep("injury");
   };
 
@@ -111,7 +113,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col md:flex-row gap-8 w-full max-w-4xl justify-center">
               <button
-                onClick={handleGenderSelect}
+                onClick={() => handleGenderSelect("male")}
                 className="group flex-1 bg-surface-container-low border border-outline/10 rounded-xl p-12 flex flex-col items-center justify-center transition-all duration-300 hover:border-primary hover:shadow-md hover:-translate-y-1 active:bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary/20 active:scale-[0.99] active:shadow-inner"
               >
                 <div className="w-40 h-40 rounded-full bg-white flex items-center justify-center mb-8 group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors duration-300 text-primary border border-outline/5 shadow-sm">
@@ -127,7 +129,7 @@ export default function Home() {
                 </span>
               </button>
               <button
-                onClick={handleGenderSelect}
+                onClick={() => handleGenderSelect("female")}
                 className="group flex-1 bg-surface-container-low border border-outline/10 rounded-xl p-12 flex flex-col items-center justify-center transition-all duration-300 hover:border-primary hover:shadow-md hover:-translate-y-1 active:bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary/20 active:scale-[0.99] active:shadow-inner"
               >
                 <div className="w-40 h-40 rounded-full bg-white flex items-center justify-center mb-8 group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors duration-300 text-primary border border-outline/5 shadow-sm">
@@ -166,7 +168,7 @@ export default function Home() {
                   <div
                     className="w-full h-full relative border border-slate-200/60 bg-gradient-to-b from-slate-50 to-white rounded-3xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md"
                     style={{ 
-                      backgroundImage: "url('/man.svg')",
+                      backgroundImage: `url('/${gender === "male" ? "man" : "women"}.svg')`,
                       backgroundSize: 'auto 350%',
                       backgroundPosition: 'center 50%',
                       opacity: 1
@@ -185,7 +187,7 @@ export default function Home() {
                   <div
                     className="w-full h-full relative border border-slate-200/60 bg-gradient-to-b from-slate-50 to-white rounded-3xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md"
                     style={{
-                      backgroundImage: "url('/man.svg')",
+                      backgroundImage: `url('/${gender === "male" ? "man" : "women"}.svg')`,
                       backgroundSize: 'auto 350%',
                       backgroundPosition: 'center 50%',
                       opacity: 1,
