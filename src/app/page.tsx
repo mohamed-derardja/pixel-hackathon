@@ -1,65 +1,193 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState } from "react";
 
 export default function Home() {
+  const [step, setStep] = useState<"language" | "gender">("language");
+
+  const handleLanguageSelect = () => {
+    setStep("gender");
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="flex-grow flex flex-col min-h-screen font-body-md antialiased">
+      {/* TopAppBar */}
+      <header className="bg-white font-medium tracking-tight top-0 border-b border-slate-100 shadow-sm flex justify-between items-center w-full px-8 py-4 shrink-0 z-50">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-sm">
+            <span
+              className="material-symbols-outlined text-white text-[28px]"
+              style={{ fontVariationSettings: "'FILL' 1" }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              medical_services
+            </span>
+          </div>
+          <span className="text-xl font-bold text-slate-900 tracking-tighter">
+            swift triage
+          </span>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 text-slate-400">
+            <button className="hover:bg-slate-50 transition-colors active:opacity-80 duration-150 p-2 rounded-full flex items-center justify-center">
+              <span className="material-symbols-outlined">fullscreen</span>
+            </button>
+            <button className="hover:bg-slate-50 transition-colors active:opacity-80 duration-150 p-2 rounded-full flex items-center justify-center">
+              <span className="material-symbols-outlined">settings</span>
+            </button>
+            <button className="hover:bg-slate-50 transition-colors active:opacity-80 duration-150 p-2 rounded-full flex items-center justify-center">
+              <span className="material-symbols-outlined">help</span>
+            </button>
+          </div>
+          <button className="bg-error hover:bg-on-error-container text-on-error px-6 py-3 rounded-default transition-colors active:opacity-80 duration-150 flex items-center gap-2 shadow-sm text-label-lg">
+            <span
+              className="material-symbols-outlined"
+              style={{ fontVariationSettings: "'FILL' 1" }}
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              emergency
+            </span>
+            Emergency Call
+          </button>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+      </header>
+
+      {/* Main Content Canvas */}
+      <main className="flex-grow flex flex-col items-center justify-center p-gutter md:p-margin max-w-container-max mx-auto w-full">
+        {step === "language" ? (
+          <>
+            <div className="text-center mb-12 max-w-2xl">
+              <h1 className="text-display-md text-on-background mb-4">
+                Select Your Language
+              </h1>
+              <p className="text-body-lg text-on-surface-variant">
+                To begin your assessment, please choose a language.
+              </p>
+            </div>
+
+            {/* Language Selection Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
+              <LanguageCard
+                code="EN"
+                name="English"
+                selectLabel="Select"
+                onClick={handleLanguageSelect}
+              />
+              <LanguageCard
+                code="FR"
+                name="Français"
+                selectLabel="Sélectionner"
+                isActive
+                onClick={handleLanguageSelect}
+              />
+              <LanguageCard
+                code="AR"
+                name="العربية"
+                selectLabel="يختار"
+                isRtl
+                onClick={handleLanguageSelect}
+              />
+            </div>
+          </>
+        ) : (
+          <div className="w-full max-w-container-max flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="text-center mb-16">
+              <h1 className="text-display-md text-on-surface mb-4">
+                Identify Patient Gender
+              </h1>
+              <p className="text-body-lg text-on-surface-variant">
+                Please select the patient's gender to proceed.
+              </p>
+            </div>
+            <div className="flex flex-col md:flex-row gap-8 w-full max-w-4xl justify-center">
+              <button className="group flex-1 bg-surface-container-low border border-outline/10 rounded-xl p-12 flex flex-col items-center justify-center transition-all duration-300 hover:border-primary hover:shadow-md hover:-translate-y-1 active:bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary/20 active:scale-[0.99] active:shadow-inner">
+                <div className="w-40 h-40 rounded-full bg-white flex items-center justify-center mb-8 group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors duration-300 text-primary border border-outline/5 shadow-sm">
+                  <span
+                    className="material-symbols-outlined text-[80px]"
+                    style={{ fontVariationSettings: "'wght' 200" }}
+                  >
+                    male
+                  </span>
+                </div>
+                <span className="text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-300">
+                  Male
+                </span>
+              </button>
+              <button className="group flex-1 bg-surface-container-low border border-outline/10 rounded-xl p-12 flex flex-col items-center justify-center transition-all duration-300 hover:border-primary hover:shadow-md hover:-translate-y-1 active:bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary/20 active:scale-[0.99] active:shadow-inner">
+                <div className="w-40 h-40 rounded-full bg-white flex items-center justify-center mb-8 group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors duration-300 text-primary border border-outline/5 shadow-sm">
+                  <span
+                    className="material-symbols-outlined text-[80px]"
+                    style={{ fontVariationSettings: "'wght' 200" }}
+                  >
+                    female
+                  </span>
+                </div>
+                <span className="text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-300">
+                  Female
+                </span>
+              </button>
+            </div>
+            <button 
+              onClick={() => setStep("language")}
+              className="mt-12 text-primary font-bold hover:underline"
+            >
+              Back to Language Selection
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
 }
+
+function LanguageCard({
+  code,
+  name,
+  selectLabel,
+  isRtl = false,
+  isActive = false,
+  onClick,
+}: {
+  code: string;
+  name: string;
+  selectLabel: string;
+  isRtl?: boolean;
+  isActive?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`group flex flex-col items-center justify-center bg-surface-container-low border ${
+        isActive
+          ? "border-primary/40 ring-1 ring-primary/10 shadow-md bg-surface-container"
+          : "border-outline/10 shadow-sm"
+      } rounded-xl p-10 hover:shadow-md hover:bg-surface-container hover:border-primary/30 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/20 active:scale-[0.99] active:shadow-inner`}
+    >
+      <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-8 border border-outline/5 group-hover:bg-primary-container transition-colors duration-300">
+        <span className="text-display-md text-primary group-hover:text-on-primary-container">
+          {code}
+        </span>
+      </div>
+      <span
+        className={`${
+          isRtl ? "text-display-lg" : "text-headline-lg"
+        } text-on-surface mb-3`}
+        dir={isRtl ? "rtl" : "ltr"}
+      >
+        {name}
+      </span>
+      <div className="h-px w-8 bg-outline/20 mb-3 group-hover:w-12 group-hover:bg-primary/40 transition-all duration-300"></div>
+      <span
+        className="text-label-lg text-on-surface-variant/70 uppercase tracking-[0.2em]"
+        dir={isRtl ? "rtl" : "ltr"}
+      >
+        {selectLabel}
+      </span>
+    </button>
+  );
+}
+
+
+
+
+
