@@ -186,15 +186,13 @@ export default function Home() {
                     <button
                       key={zone}
                       onClick={() => toggleZone(zone)}
-                      className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-all duration-200 text-body-md ${
-                        selectedZones.includes(zone)
-                          ? "bg-primary/10 text-primary font-semibold border border-primary/20 shadow-sm"
-                          : "text-on-surface-variant hover:bg-surface-container-high/60 border border-transparent"
-                      }`}
+                      className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-all duration-200 text-body-md ${selectedZones.includes(zone)
+                        ? "bg-primary/10 text-primary font-semibold border border-primary/20 shadow-sm"
+                        : "text-on-surface-variant hover:bg-surface-container-high/60 border border-transparent"
+                        }`}
                     >
-                      <span className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                        selectedZones.includes(zone) ? "border-primary bg-primary" : "border-outline/30"
-                      }`}>
+                      <span className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${selectedZones.includes(zone) ? "border-primary bg-primary" : "border-outline/30"
+                        }`}>
                         {selectedZones.includes(zone) && (
                           <span className="material-symbols-outlined text-white text-[14px]">check</span>
                         )}
@@ -269,10 +267,9 @@ export default function Home() {
                     <div
                       className="w-full h-full relative border border-slate-200/50 bg-gradient-to-b from-slate-50/50 to-white rounded-2xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md hover:border-primary/20"
                       style={{
-                        backgroundImage: `url('/${gender === "male" ? "man_back_side" : "women"}.svg')`,
-                        backgroundSize: 'auto 520%',
-                        backgroundPosition: 'center 50%',
-                        ...(gender === "female" ? { transform: "scaleX(-1)" } : {})
+                        backgroundImage: `url('/${gender === "male" ? "man_back_side" : "women_back_side"}.svg')`,
+                        backgroundSize: gender === "male" ? 'auto 520%' : 'auto 540%',
+                        backgroundPosition: gender === "male" ? 'center 50%' : 'center 78%',
                       }}
                     >
                       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center 40%, rgba(0, 102, 255, 0.04) 0%, transparent 60%)' }}></div>
