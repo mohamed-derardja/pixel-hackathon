@@ -6,6 +6,7 @@ export default function Home() {
   const [step, setStep] = useState<"language" | "gender" | "injury">("language");
   const [gender, setGender] = useState<"male" | "female">("male");
   const [selectedZones, setSelectedZones] = useState<string[]>(["Head", "Right Lower Leg"]);
+  const [isViewSwapped, setIsViewSwapped] = useState<boolean>(false);
 
   const handleLanguageSelect = () => {
     setStep("gender");
@@ -229,7 +230,7 @@ export default function Home() {
                 </div>
 
                 {/* Body Map Container */}
-                <div className="relative w-full bg-white border border-outline/10 rounded-2xl shadow-sm p-8 lg:p-10 flex flex-col sm:flex-row items-center justify-center gap-10 min-h-[750px] overflow-hidden">
+                <div className={`relative w-full bg-white border border-outline/10 rounded-2xl shadow-sm p-8 lg:p-10 flex ${isViewSwapped ? 'flex-col-reverse sm:flex-row-reverse' : 'flex-col sm:flex-row'} items-center justify-center gap-10 min-h-[750px] overflow-hidden`}>
                   {/* Decorative Grid */}
                   <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #00629d 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
 
@@ -242,9 +243,9 @@ export default function Home() {
                     <div
                       className="w-full h-full relative border border-slate-200/50 bg-gradient-to-b from-slate-50/50 to-white rounded-2xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md hover:border-primary/20"
                       style={{
-                        backgroundImage: `url('/${gender === "male" ? "man" : "women"}.svg')`,
-                        backgroundSize: 'auto 350%',
-                        backgroundPosition: 'center 50%',
+                        backgroundImage: `url('/${gender === "male" ? "man" : "women_front_side_correct"}.svg')`,
+                        backgroundSize: 'auto 150%',
+                        backgroundPosition: 'center 25%',
                       }}
                     >
                       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center 40%, rgba(0, 102, 255, 0.04) 0%, transparent 60%)' }}></div>
@@ -252,9 +253,15 @@ export default function Home() {
                   </div>
 
                   {/* Divider */}
-                  <div className="hidden sm:flex flex-col items-center gap-3">
+                  <div className="hidden sm:flex flex-col items-center gap-3 z-10">
                     <div className="w-px h-48 bg-gradient-to-b from-transparent via-outline/15 to-transparent"></div>
-                    <span className="material-symbols-outlined text-outline/30 text-[20px]">compare_arrows</span>
+                    <button
+                      onClick={() => setIsViewSwapped(!isViewSwapped)}
+                      className="w-10 h-10 rounded-full bg-white border border-outline/10 flex items-center justify-center text-on-surface-variant shadow-sm hover:text-primary hover:border-primary/30 transition-all duration-300 active:scale-90 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      title="Swap Views"
+                    >
+                      <span className={`material-symbols-outlined text-[20px] transition-transform duration-500 ${isViewSwapped ? 'rotate-180' : ''}`}>compare_arrows</span>
+                    </button>
                     <div className="w-px h-48 bg-gradient-to-b from-transparent via-outline/15 to-transparent"></div>
                   </div>
 
