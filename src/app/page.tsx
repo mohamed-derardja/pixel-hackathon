@@ -153,61 +153,149 @@ export default function Home() {
             </button>
           </div>
         ) : (
-          <div className="w-full flex flex-col lg:flex-row gap-8 lg:gap-12 animate-in fade-in zoom-in-95 duration-500">
-            {/* Left Section: Interactive Canvas */}
-            <section className="flex-grow flex flex-col gap-6">
-              <header>
-                <h1 className="text-display-md text-on-surface mb-2">Patient Anatomy</h1>
-              </header>
+          <div className="w-full flex flex-col gap-6 animate-in fade-in duration-500">
+            {/* Step Progress Bar */}
+            <div className="flex items-center gap-3 mb-2">
+              <button onClick={() => setStep("language")} className="flex items-center gap-2 text-primary/60 hover:text-primary transition-colors text-label-lg">
+                <span className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">1</span>
+                Language
+              </button>
+              <div className="w-8 h-px bg-primary/20"></div>
+              <button onClick={() => setStep("gender")} className="flex items-center gap-2 text-primary/60 hover:text-primary transition-colors text-label-lg">
+                <span className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">2</span>
+                Gender
+              </button>
+              <div className="w-8 h-px bg-primary/20"></div>
+              <div className="flex items-center gap-2 text-primary text-label-lg font-bold">
+                <span className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">3</span>
+                Injury Map
+              </div>
+            </div>
 
-              {/* Body Map Container */}
-              <div className="relative w-full bg-slate-50/30 border border-outline/10 rounded-2xl shadow-sm p-12 flex flex-col sm:flex-row items-center justify-center gap-16 min-h-[850px] overflow-hidden">
-                {/* Front View */}
-                <div className="relative w-[450px] h-[750px] flex flex-col items-center group">
-                  <h3 className="text-label-lg text-secondary font-bold text-center uppercase tracking-[0.2em] mb-6 group-hover:text-primary transition-colors">Anterior (Front)</h3>
-                  <div
-                    className="w-full h-full relative border border-slate-200/60 bg-gradient-to-b from-slate-50 to-white rounded-3xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md"
-                    style={{ 
-                      backgroundImage: `url('/${gender === "male" ? "man" : "women"}.svg')`,
-                      backgroundSize: 'auto 350%',
-                      backgroundPosition: 'center 50%',
-                      opacity: 1
-                    }}
+            {/* Main Layout */}
+            <div className="flex flex-col lg:flex-row gap-6">
+              {/* Left Sidebar — Body Zones */}
+              <aside className="w-full lg:w-72 shrink-0 bg-white border border-outline/10 rounded-2xl shadow-sm p-5 flex flex-col gap-4 h-fit lg:sticky lg:top-24">
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="material-symbols-outlined text-primary text-[22px]" style={{ fontVariationSettings: "'FILL' 1" }}>pin_drop</span>
+                  <h2 className="text-headline-md text-on-surface">Body Zones</h2>
+                </div>
+                <p className="text-label-md text-on-surface-variant/70 mb-2">Tap zones to mark injuries</p>
+                <div className="flex flex-col gap-1.5">
+                  {["Head", "Neck", "Chest", "Abdomen", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Upper Back", "Lower Back"].map((zone) => (
+                    <button
+                      key={zone}
+                      onClick={() => toggleZone(zone)}
+                      className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-all duration-200 text-body-md ${
+                        selectedZones.includes(zone)
+                          ? "bg-primary/10 text-primary font-semibold border border-primary/20 shadow-sm"
+                          : "text-on-surface-variant hover:bg-surface-container-high/60 border border-transparent"
+                      }`}
+                    >
+                      <span className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                        selectedZones.includes(zone) ? "border-primary bg-primary" : "border-outline/30"
+                      }`}>
+                        {selectedZones.includes(zone) && (
+                          <span className="material-symbols-outlined text-white text-[14px]">check</span>
+                        )}
+                      </span>
+                      {zone}
+                    </button>
+                  ))}
+                </div>
+                {selectedZones.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-outline/10">
+                    <p className="text-label-md text-on-surface-variant/70 mb-2">{selectedZones.length} zone{selectedZones.length > 1 ? "s" : ""} selected</p>
+                    <button onClick={() => setSelectedZones([])} className="text-error text-label-lg hover:underline transition-colors">Clear all</button>
+                  </div>
+                )}
+              </aside>
+
+              {/* Center — Body Map Canvas */}
+              <section className="flex-grow flex flex-col gap-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h1 className="text-display-md text-on-surface leading-tight">Patient Anatomy</h1>
+                    <p className="text-body-md text-on-surface-variant/70 mt-1 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>{gender === "male" ? "male" : "female"}</span>
+                      {gender === "male" ? "Male" : "Female"} patient
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setStep("gender")}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-outline/15 text-label-lg text-on-surface-variant hover:bg-surface-container-high/60 hover:border-primary/30 transition-all duration-200"
                   >
-                    {/* Subtle Overlay Glow */}
-                    <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(0, 102, 255, 0.03) 0%, transparent 70%)' }}></div>
+                    <span className="material-symbols-outlined text-[18px]">swap_horiz</span>
+                    Change Gender
+                  </button>
+                </div>
+
+                {/* Body Map Container */}
+                <div className="relative w-full bg-white border border-outline/10 rounded-2xl shadow-sm p-8 lg:p-10 flex flex-col sm:flex-row items-center justify-center gap-10 min-h-[750px] overflow-hidden">
+                  {/* Decorative Grid */}
+                  <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #00629d 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+
+                  {/* Front View */}
+                  <div className="relative flex-1 max-w-[420px] h-[680px] flex flex-col items-center group">
+                    <div className="flex items-center gap-2 mb-5">
+                      <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                      <h3 className="text-label-lg text-secondary font-bold uppercase tracking-[0.2em] group-hover:text-primary transition-colors">Anterior</h3>
+                    </div>
+                    <div
+                      className="w-full h-full relative border border-slate-200/50 bg-gradient-to-b from-slate-50/50 to-white rounded-2xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md hover:border-primary/20"
+                      style={{
+                        backgroundImage: `url('/${gender === "male" ? "man" : "women"}.svg')`,
+                        backgroundSize: 'auto 350%',
+                        backgroundPosition: 'center 50%',
+                      }}
+                    >
+                      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center 40%, rgba(0, 102, 255, 0.04) 0%, transparent 60%)' }}></div>
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="hidden sm:flex flex-col items-center gap-3">
+                    <div className="w-px h-48 bg-gradient-to-b from-transparent via-outline/15 to-transparent"></div>
+                    <span className="material-symbols-outlined text-outline/30 text-[20px]">compare_arrows</span>
+                    <div className="w-px h-48 bg-gradient-to-b from-transparent via-outline/15 to-transparent"></div>
+                  </div>
+
+                  {/* Back View */}
+                  <div className="relative flex-1 max-w-[420px] h-[680px] flex flex-col items-center group">
+                    <div className="flex items-center gap-2 mb-5">
+                      <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                      <h3 className="text-label-lg text-secondary font-bold uppercase tracking-[0.2em] group-hover:text-primary transition-colors">Posterior</h3>
+                    </div>
+                    <div
+                      className="w-full h-full relative border border-slate-200/50 bg-gradient-to-b from-slate-50/50 to-white rounded-2xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md hover:border-primary/20"
+                      style={{
+                        backgroundImage: `url('/${gender === "male" ? "man_back_side" : "women"}.svg')`,
+                        backgroundSize: 'auto 520%',
+                        backgroundPosition: 'center 50%',
+                        ...(gender === "female" ? { transform: "scaleX(-1)" } : {})
+                      }}
+                    >
+                      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center 40%, rgba(0, 102, 255, 0.04) 0%, transparent 60%)' }}></div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="hidden sm:block w-px h-[600px] bg-gradient-to-b from-transparent via-outline/20 to-transparent"></div>
-
-                {/* Back View */}
-                <div className="relative w-[450px] h-[750px] flex flex-col items-center group">
-                  <h3 className="text-label-lg text-secondary font-bold text-center uppercase tracking-[0.2em] mb-6 group-hover:text-primary transition-colors">Posterior (Back)</h3>
-                  <div
-                    className="w-full h-full relative border border-slate-200/60 bg-gradient-to-b from-slate-50 to-white rounded-3xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md"
-                    style={{
-                      backgroundImage: `url('/${gender === "male" ? "man" : "women"}.svg')`,
-                      backgroundSize: 'auto 350%',
-                      backgroundPosition: 'center 50%',
-                      opacity: 1,
-                      transform: "scaleX(-1)"
-                    }}
-                  >
-                    {/* Subtle Overlay Glow */}
-                    <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(0, 102, 255, 0.03) 0%, transparent 70%)' }}></div>
+                {/* Bottom Action Bar */}
+                <div className="flex items-center justify-between bg-white border border-outline/10 rounded-2xl shadow-sm px-6 py-4">
+                  <button onClick={() => setStep("gender")} className="flex items-center gap-2 px-5 py-3 rounded-xl text-label-lg text-on-surface-variant hover:bg-surface-container-high/60 border border-outline/10 transition-all duration-200">
+                    <span className="material-symbols-outlined text-[18px] rotate-180">arrow_forward</span>
+                    Back
+                  </button>
+                  <div className="text-label-md text-on-surface-variant/60">
+                    {selectedZones.length > 0 ? `${selectedZones.length} injury zone${selectedZones.length > 1 ? "s" : ""} marked` : "No zones selected yet"}
                   </div>
+                  <button className="flex items-center gap-2 px-7 py-3 rounded-xl bg-primary text-white text-label-lg font-bold hover:bg-primary/90 transition-all duration-200 shadow-sm active:scale-[0.98]">
+                    Continue
+                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                  </button>
                 </div>
-              </div>
-
-              <div className="flex justify-center mt-10">
-                <button onClick={() => setStep("gender")} className="bg-primary text-white font-bold px-10 py-5 rounded-lg flex items-center justify-center gap-2 hover:bg-on-primary-fixed-variant transition-all active:scale-[0.98] shadow-md">
-                  <span className="material-symbols-outlined rotate-180">arrow_forward</span>
-                  Change Gender / Back
-                </button>
-              </div>
-
-            </section>
+              </section>
+            </div>
           </div>
         )}
       </main>
