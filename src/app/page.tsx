@@ -1,12 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { InteractiveAnteriorBody } from "../components/InteractiveAnteriorBody";
+import { InteractivePosteriorBody } from "../components/InteractivePosteriorBody";
 
 export default function Home() {
+  const router = useRouter();
   const [step, setStep] = useState<"language" | "gender" | "injury">("language");
   const [gender, setGender] = useState<"male" | "female">("male");
   const [selectedZones, setSelectedZones] = useState<string[]>(["Head", "Right Lower Leg"]);
-  const [isViewSwapped, setIsViewSwapped] = useState<boolean>(false);
+  const [activeView, setActiveView] = useState<"anterior" | "posterior">("anterior");
 
   const handleLanguageSelect = () => {
     setStep("gender");
@@ -21,6 +25,13 @@ export default function Home() {
     setSelectedZones((prev) =>
       prev.includes(zone) ? prev.filter((z) => z !== zone) : [...prev, zone]
     );
+  };
+
+  const handleContinue = () => {
+    const params = new URLSearchParams();
+    if (selectedZones.length > 0) params.set("zones", selectedZones.join(","));
+    params.set("gender", gender);
+    router.push(`/quiz?${params.toString()}`);
   };
 
   return (
@@ -182,8 +193,8 @@ export default function Home() {
                   <h2 className="text-headline-md text-on-surface">Body Zones</h2>
                 </div>
                 <p className="text-label-md text-on-surface-variant/70 mb-2">Tap zones to mark injuries</p>
-                <div className="flex flex-col gap-1.5">
-                  {["Head", "Neck", "Chest", "Abdomen", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Upper Back", "Lower Back"].map((zone) => (
+                <div className="flex flex-col gap-1.5 max-h-[50vh] overflow-y-auto">
+                  {["Head", "Face", "Neck", "Right Shoulder", "Left Shoulder", "Chest", "Abdomen", "Pelvis", "Buttocks", "Right Arm", "Left Arm", "Right Hand", "Left Hand", "Right Leg", "Left Leg", "Right Knee", "Left Knee", "Right Foot", "Left Foot"].map((zone) => (
                     <button
                       key={zone}
                       onClick={() => toggleZone(zone)}
@@ -229,58 +240,54 @@ export default function Home() {
                   </button>
                 </div>
 
-                {/* Body Map Container */}
-                <div className={`relative w-full bg-white border border-outline/10 rounded-2xl shadow-sm p-8 lg:p-10 flex ${isViewSwapped ? 'flex-col-reverse sm:flex-row-reverse' : 'flex-col sm:flex-row'} items-center justify-center gap-10 min-h-[750px] overflow-hidden`}>
+                {/* View Toggle Tabs */}
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  <button
+                    onClick={() => setActiveView("anterior")}
+                    className={`flex items-center gap-3 px-8 py-4 rounded-xl text-label-lg font-bold transition-all duration-200 ${
+                      activeView === "anterior"
+                        ? "bg-primary text-white shadow-md"
+                        : "bg-white border border-outline/20 text-on-surface-variant hover:border-primary/40"
+                    }`}
+                  >
+                    <span className="w-3 h-3 rounded-full bg-white animate-pulse"></span>
+                    Anterior (Front)
+                  </button>
+                  <button
+                    onClick={() => setActiveView("posterior")}
+                    className={`flex items-center gap-3 px-8 py-4 rounded-xl text-label-lg font-bold transition-all duration-200 ${
+                      activeView === "posterior"
+                        ? "bg-secondary text-white shadow-md"
+                        : "bg-white border border-outline/20 text-on-surface-variant hover:border-secondary/40"
+                    }`}
+                  >
+                    <span className="w-3 h-3 rounded-full bg-white animate-pulse"></span>
+                    Posterior (Back)
+                  </button>
+                </div>
+
+                {/* Body Map Container - Full Screen */}
+                <div className="relative w-full h-[calc(100vh-140px)] bg-white border border-outline/10 rounded-2xl shadow-sm flex items-center justify-center overflow-hidden">
                   {/* Decorative Grid */}
                   <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #00629d 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
 
-                  {/* Front View */}
-                  <div className="relative flex-1 max-w-[420px] h-[680px] flex flex-col items-center group">
-                    <div className="flex items-center gap-2 mb-5">
-                      <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                      <h3 className="text-label-lg text-secondary font-bold uppercase tracking-[0.2em] group-hover:text-primary transition-colors">Anterior</h3>
-                    </div>
-                    <div
-                      className="w-full h-full relative border border-slate-200/50 bg-gradient-to-b from-slate-50/50 to-white rounded-2xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md hover:border-primary/20"
-                      style={{
-                        backgroundImage: `url('/${gender === "male" ? "man_front_side_v2" : "women_front_side_correct"}.svg')`,
-                        backgroundSize: gender === "male" ? "auto 355%" : "auto 160%",
-                        backgroundPosition: gender === "male" ? "center 50%" : "center 32%",
-                      }}
-                    >
-                      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center 40%, rgba(0, 102, 255, 0.04) 0%, transparent 60%)' }}></div>
-                    </div>
-                  </div>
-
-                  {/* Divider */}
-                  <div className="hidden sm:flex flex-col items-center gap-3 z-10">
-                    <div className="w-px h-48 bg-gradient-to-b from-transparent via-outline/15 to-transparent"></div>
-                    <button
-                      onClick={() => setIsViewSwapped(!isViewSwapped)}
-                      className="w-10 h-10 rounded-full bg-white border border-outline/10 flex items-center justify-center text-on-surface-variant shadow-sm hover:text-primary hover:border-primary/30 transition-all duration-300 active:scale-90 focus:outline-none focus:ring-2 focus:ring-primary/20"
-                      title="Swap Views"
-                    >
-                      <span className={`material-symbols-outlined text-[20px] transition-transform duration-500 ${isViewSwapped ? 'rotate-180' : ''}`}>compare_arrows</span>
-                    </button>
-                    <div className="w-px h-48 bg-gradient-to-b from-transparent via-outline/15 to-transparent"></div>
-                  </div>
-
-                  {/* Back View */}
-                  <div className="relative flex-1 max-w-[420px] h-[680px] flex flex-col items-center group">
-                    <div className="flex items-center gap-2 mb-5">
-                      <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                      <h3 className="text-label-lg text-secondary font-bold uppercase tracking-[0.2em] group-hover:text-primary transition-colors">Posterior</h3>
-                    </div>
-                    <div
-                      className="w-full h-full relative border border-slate-200/50 bg-gradient-to-b from-slate-50/50 to-white rounded-2xl shadow-inner overflow-hidden flex items-center justify-center bg-no-repeat transition-all duration-500 hover:shadow-md hover:border-primary/20"
-                      style={{
-                        backgroundImage: `url('/${gender === "male" ? "man_back_side" : "women_back_side"}.svg')`,
-                        backgroundSize: gender === "male" ? 'auto 520%' : 'auto 540%',
-                        backgroundPosition: gender === "male" ? 'center 50%' : 'center 78%',
-                      }}
-                    >
-                      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center 40%, rgba(0, 102, 255, 0.04) 0%, transparent 60%)' }}></div>
-                    </div>
+                  {/* Full Screen Body View - No Title */}
+                  <div className="relative w-full h-full flex items-center justify-center p-1">
+                    {activeView === "anterior" ? (
+                      <InteractiveAnteriorBody
+                        gender={gender}
+                        selectedZones={selectedZones}
+                        onToggleZone={toggleZone}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <InteractivePosteriorBody
+                        gender={gender}
+                        selectedZones={selectedZones}
+                        onToggleZone={toggleZone}
+                        className="h-full w-full object-contain"
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -293,7 +300,7 @@ export default function Home() {
                   <div className="text-label-md text-on-surface-variant/60">
                     {selectedZones.length > 0 ? `${selectedZones.length} injury zone${selectedZones.length > 1 ? "s" : ""} marked` : "No zones selected yet"}
                   </div>
-                  <button className="flex items-center gap-2 px-7 py-3 rounded-xl bg-primary text-white text-label-lg font-bold hover:bg-primary/90 transition-all duration-200 shadow-sm active:scale-[0.98]">
+                  <button onClick={handleContinue} className="flex items-center gap-2 px-7 py-3 rounded-xl bg-primary text-white text-label-lg font-bold hover:bg-primary/90 transition-all duration-200 shadow-sm active:scale-[0.98]">
                     Continue
                     <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                   </button>
